@@ -33,21 +33,22 @@
           }
         );
     in
-    {
-      overlays.default = final: prev: {
-        rustToolchain =
-          with inputs.fenix.packages.${prev.stdenv.hostPlatform.system};
-          combine (
-            with stable;
-            [
-              clippy
-              rustc
-              cargo
-              rustfmt
-              rust-src
-            ]
-          );
-      };
+      {
+      overlays.default = final: prev:
+        let
+          fenixPkgs = inputs.fenix.packages.${prev.stdenv.hostPlatform.system};
+        in
+          {
+          rustToolchain = fenixPkgs.combine [
+            fenixPkgs.stable.rustc
+            fenixPkgs.stable.cargo
+            fenixPkgs.stable.clippy
+            fenixPkgs.stable.rustfmt
+            fenixPkgs.stable.rust-src
+
+            fenixPkgs.targets.riscv32imc-unknown-none-elf.stable.rust-std
+          ];
+        };
 
       devShells = forEachSupportedSystem (
         { pkgs }:
