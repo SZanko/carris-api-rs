@@ -76,7 +76,10 @@ where
         }
 
         #[cfg(feature = "defmt")]
-        defmt::info!("carris response: {:?}", core::str::from_utf8(&self.body_buf[..total]).unwrap_or("<invalid utf8>"));
+        defmt::info!(
+            "carris response: {:?}",
+            core::str::from_utf8(&self.body_buf[..total]).unwrap_or("<invalid utf8>")
+        );
 
         let arrivals: alloc::vec::Vec<Arrival> =
             serde_json::from_slice(&self.body_buf[..total]).map_err(Error::Json)?;
